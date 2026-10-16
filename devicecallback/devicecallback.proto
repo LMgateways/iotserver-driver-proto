@@ -1,0 +1,30 @@
+syntax = "proto3";
+package devicecallback;
+option go_package = "github.com/LMgateways/iotserver-driver-proto/devicecallback";
+import "driverdevice/device.proto";
+import "google/protobuf/empty.proto";
+
+
+message createDeviceCallbackRequest {
+  driverdevice.Device Data = 1;
+  uint64 happenTime = 2;
+}
+
+message updateDeviceCallbackRequest {
+  driverdevice.Device Data = 1;
+  uint64 happenTime = 2;
+}
+
+message deleteDeviceCallbackRequest {
+  string deviceId  =1;
+  uint64 happenTime = 2;
+}
+
+service DeviceCallBackService {
+  // 创建设备回调 edge = c driver = s
+  rpc CreateDeviceCallback(createDeviceCallbackRequest) returns (google.protobuf.Empty) {}
+  // 更新设备回调 edge = c driver = s
+  rpc UpdateDeviceCallback(updateDeviceCallbackRequest) returns (google.protobuf.Empty) {}
+  // 删除设备回调 edge = c driver = s
+  rpc DeleteDeviceCallback(deleteDeviceCallbackRequest) returns (google.protobuf.Empty) {}
+}

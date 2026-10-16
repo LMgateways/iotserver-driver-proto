@@ -1,0 +1,36 @@
+syntax = "proto3";
+package custommqttmessage;
+option go_package = "github.com/LMgateways/iotserver-driver-proto/custommqttmessage";
+import "drivercommon/common.proto";
+
+message PlatformCustomPublishRequest{
+  drivercommon.BaseRequestMessage baseRequest = 1;
+  string deviceId = 2;
+  string topic = 3;
+  int32 qos = 4;
+  bool retained = 5;
+  string payload = 6;
+}
+
+message PlatformCustomSubscribeRequest {
+  drivercommon.BaseRequestMessage baseRequest = 1;
+  string deviceId = 2;
+  string topic = 3;
+  int32 qos = 4;
+}
+
+message PlatformCustomUnSubscribeRequest {
+  drivercommon.BaseRequestMessage baseRequest = 1;
+  string deviceId = 2;
+  repeated string topics = 3;
+}
+
+// 自定义mqtt消息入口
+service RpcCustomMqttMessage {
+  // 平台自定义消息推Public
+  rpc PlatformCustomPublish(PlatformCustomPublishRequest) returns (drivercommon.CommonResponse) {}
+  // 平台自定义消息推Subscribe
+  rpc PlatformCustomSubscribe(PlatformCustomSubscribeRequest) returns (drivercommon.CommonResponse) {}
+  // 平台自定义消息UnSubscribe
+  rpc PlatformCustomUnSubscribe(PlatformCustomUnSubscribeRequest) returns (drivercommon.CommonResponse) {}
+}

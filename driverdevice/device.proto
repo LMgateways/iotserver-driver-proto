@@ -1,0 +1,163 @@
+syntax = "proto3";
+package driverdevice;
+option go_package = "github.com/LMgateways/iotserver-driver-proto/driverdevice";
+import "drivercommon/common.proto";
+
+message ConnectIotPlatformRequest {
+  drivercommon.BaseRequestMessage baseRequest = 1;
+  string deviceId = 2;
+}
+
+message ConnectIotPlatformResponse {
+  drivercommon.CommonResponse baseResponse = 1;
+  message Data {
+    ConnectStatus Status = 1;
+  }
+  Data data = 2;
+}
+
+message DisconnectIotPlatformRequest {
+  drivercommon.BaseRequestMessage baseRequest = 1;
+  string deviceId = 2;
+}
+
+
+message DisconnectIotPlatformResponse {
+  drivercommon.CommonResponse baseResponse = 1;
+  message Data {
+    ConnectStatus Status = 1;
+  }
+  Data data = 2;
+}
+
+message QueryDeviceByIdRequest {
+  drivercommon.BaseRequestMessage baseRequest = 1;
+  string Id = 2;
+}
+
+
+message QueryDeviceByIdResponse {
+  drivercommon.CommonResponse baseResponse = 1;
+  message Data {
+    Device device = 1;
+  }
+  Data data = 2;
+}
+
+enum DeviceStatus {
+  UnKnowStatus = 0;
+  OnLine = 1;
+  OffLine = 2;
+  UnActive = 3;
+  Disable = 4;
+}
+
+message Device {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string product_id = 4;
+  DeviceStatus status = 5;
+  drivercommon.IotPlatform platform = 6;
+  string device_sn  = 7;
+  string secret = 8;
+  map<string, string> External = 9;
+}
+
+message QueryDeviceListRequest {
+  drivercommon.BaseRequestMessage baseRequest = 1;
+}
+
+message QueryDeviceListResponse {
+  drivercommon.CommonResponse baseResponse = 1;
+  message Data {
+    uint32 total = 1;
+    repeated Device devices = 2;
+  }
+  Data data = 2;
+}
+
+message AddDevice {
+  string name = 1;
+  string product_id = 2;
+  string description = 3;
+  string device_sn    = 4;
+  map<string, string> External = 5;
+}
+
+
+message CreateDeviceRequest {
+  drivercommon.BaseRequestMessage baseRequest = 1;
+  AddDevice device = 2;
+}
+
+message CreateDeviceRequestResponse {
+  message Data {
+    Device devices = 2;
+  }
+  Data data = 2;
+  drivercommon.CommonResponse baseResponse = 1;
+}
+
+message CreateDeviceAndConnectRequest {
+  AddDevice device = 1;
+}
+
+message CreateDeviceAndConnectRequestResponse {
+  drivercommon.CommonResponse baseResponse = 1;
+  message Data {
+    Device devices = 1;
+  }
+  Data data = 2;
+}
+
+message DeleteDeviceRequest {
+  drivercommon.BaseRequestMessage baseRequest = 1;
+  string deviceId = 2;
+}
+
+message DeleteDeviceResponse {
+  drivercommon.CommonResponse baseResponse = 1;
+}
+
+message GetDeviceConnectStatusRequest {
+  drivercommon.BaseRequestMessage baseRequest = 1;
+  string deviceId = 2;
+}
+
+enum ConnectStatus {
+  ONLINE = 0;//在线
+  OFFLINE = 1;//离线
+  UnACTIVE = 2;//未激活
+  DISABLE = 3;//禁用
+  UnKnow = 4;//未知
+
+}
+
+message GetDeviceConnectStatusResponse {
+  message Data {
+    ConnectStatus Status = 1;
+  }
+
+  Data data = 2;
+  drivercommon.CommonResponse baseResponse = 1;
+}
+
+service RpcDevice {
+  // 设备连接云服务 edge s driver c
+  rpc ConnectIotPlatform(ConnectIotPlatformRequest) returns (ConnectIotPlatformResponse) {}
+  // 设备断开连接云服务
+  rpc DisconnectIotPlatform(DisconnectIotPlatformRequest) returns (DisconnectIotPlatformResponse) {}
+  // 设备连接状态
+  rpc GetDeviceConnectStatus (GetDeviceConnectStatusRequest) returns(GetDeviceConnectStatusResponse){}
+  // 获取所有设备
+  rpc QueryDeviceList(QueryDeviceListRequest) returns (QueryDeviceListResponse) {}
+  // 获取设备
+  rpc QueryDeviceById(QueryDeviceByIdRequest) returns (QueryDeviceByIdResponse) {}
+  // 创建设备
+  rpc CreateDevice(CreateDeviceRequest) returns (CreateDeviceRequestResponse) {}
+  // 创建设备并且建立连接
+  rpc CreateDeviceAndConnect(CreateDeviceAndConnectRequest) returns (CreateDeviceAndConnectRequestResponse) {}
+  // 删除设备
+  rpc DeleteDevice(DeleteDeviceRequest) returns (DeleteDeviceResponse) {}
+}

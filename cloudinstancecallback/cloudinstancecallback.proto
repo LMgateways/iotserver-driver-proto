@@ -1,0 +1,18 @@
+syntax = "proto3";
+package cloudinstancecallback;
+option go_package = "github.com/LMgateways/iotserver-driver-proto/cloudinstancecallback";
+import "google/protobuf/empty.proto";
+import "cloudinstance/cloudinstance.proto";
+
+
+message cloudInstanceStatueCallbackRequest {
+  string cloudInstanceName = 1;
+  cloudinstance.CloudInstanceStatus status = 2;
+  uint64 happenTime = 3;
+}
+
+service CloudInstanceCallBackService {
+  // 云实例状态回调 edge = c driver = s
+  rpc CloudInstanceStatueCallback(cloudInstanceStatueCallbackRequest) returns (google.protobuf.Empty) {}
+}
+

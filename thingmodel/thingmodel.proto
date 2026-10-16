@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package thingmodel;
+option go_package = "github.com/LMgateways/iotserver-driver-proto/thingmodel";
+import "google/protobuf/empty.proto";
+import "drivercommon/common.proto";
+
+//enum ThingModelOperationType {
+//  UNSPECIFIEDs = 0;
+//  MODEL_GET = 1;  // 设备上报向云端获取物模型查询请求
+//  MODEL_GET_RESPONSE = 2; // 云端响应设备上报向云端获取物模型查询请求
+//  PROPERTY_REPORT = 3;    // 设备上报向云端上报设备属性值
+//  PROPERTY_REPORT_RESPONSE = 4;   // 云端响应设备上报向云端上报设备属性值
+//  PROPERTY_SET = 5;   // 云端下发属性设置
+//  PROPERTY_SET_RESPONSE = 6;   // 设备响应云端下发属性设置
+//  PROPERTY_GET = 7;   // 云端下发属性查询请求
+//  PROPERTY_GET_RESPONSE = 8;   // 设备响应云端下发属性查询请求
+//  ACTION_EXECUTE = 9;     // 云端下发设备动作执行消息
+//  ACTION_EXECUTE_RESPONSE = 10;     // 设备响应云端下发设备动作执行消息
+//  EVENT_TRIGGER = 11;  // 设备上报事件触发消息
+//  EVENT_TRIGGER_RESPONSE = 12;  // 云端响应设备上报事件触发消息
+//  DATA_BATCH_REPORT = 13;     // 设备上报 批量上报属性或事件数据
+//  DATA_BATCH_REPORT_RESPONSE = 14;   // 云端响应设备上报 批量上报属性或事件数据
+//  PROPERTY_DESIRED_GET = 15;  // 设备上报向云端获取属性期望值请求
+//  PROPERTY_DESIRED_GET_RESPONSE = 16;  // 云端响应设备上报向云端获取属性期望值请求
+//  PROPERTY_DESIRED_DELETE = 17;  // 设备上报向云端发送清除属性期望值请求
+//  PROPERTY_DESIRED_DELETE_RESPONSE = 18;  // 云端响应设备上报向云端发送清除属性期望值请求
+//}
+
+// 物模型
+message ThingModelMsg {
+  drivercommon.BaseRequestMessage baseRequest = 1;
+  string deviceId = 2; // 下发的目标设备id
+  OperationType operationType = 3;
+  string data = 4;
+}
+
+
+
+// sdk 物模型消息上报 edge
+service ThingModelUpService {
+  rpc ThingModelMsgReport(ThingModelMsg) returns (drivercommon.CommonResponse) {}
+}
+
+enum OperationType {
+  UNSPECIFIED = 0;
+  //下发相关
+  PROPERTY_SET = 1;   // 下发属性设置请求
+  PROPERTY_GET = 2;   // 下发属性查询请求
+  SERVICE_EXECUTE = 3;     // 下发设备动作执行请求
+  PROPERTY_REPORT_RESPONSE = 4;   // 云端响应上报属性消息
+  EVENT_REPORT_RESPONSE = 5;  // 云端响应上报事件消息
+  DATA_BATCH_REPORT_RESPONSE = 6;   // 云端响应批量上报消息
+  PROPERTY_DESIRED_GET_RESPONSE = 7;  // 云端响应设备上报向云端获取属性期望值请求
+  PROPERTY_DESIRED_DELETE_RESPONSE = 8;  // 云端响应设备上报向云端发送清除属性期望值请求
+  CUSTOM_MQTT_PUBLISH = 9; //云端自定义topic 消息下发
+  //上报相关
+  PROPERTY_REPORT = 20;    // 属性上报
+  PROPERTY_SET_RESPONSE = 21;   // 响应云端下发属性请求
+  PROPERTY_GET_RESPONSE = 22;   // 响应云端下发属性查询请求
+  SERVICE_EXECUTE_RESPONSE = 23;     // 响应云端下发设备服务调用请求
+  EVENT_REPORT = 24;  // 事件上报
+  DATA_BATCH_REPORT = 25;     // 设备批量上报数据
+  PROPERTY_DESIRED_GET = 26;  // 设备上报向云端获取属性期望值请求
+  PROPERTY_DESIRED_DELETE = 27;  // 设备上报向云端发送清除属性期望值请求
+
+}
+
+message ThingModelIssueMsg {
+  string deviceId = 1; // 下发的目标设备id
+  OperationType operationType = 2;
+  string data = 3;
+}
+
+// edge 物模型消息下发 sdk
+service ThingModelDownService {
+  rpc ThingModelMsgIssue(ThingModelIssueMsg) returns (google.protobuf.Empty) {}
+}
