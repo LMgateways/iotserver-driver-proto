@@ -67,13 +67,3 @@ import (
     "github.com/LMgateways/iotserver-driver-proto/drivercommon"
 )
 ```
-
-## 与上游的差异
-
-fork 自 `github.com/winc-link/edge-driver-proto`，改动仅限工程层面：
-
-- 模块路径改为 `github.com/LMgateways/iotserver-driver-proto`；
-- 补上原仓库缺失的 `go.mod`（原仓库依赖 Go 自动合成）；
-- 各 `.proto` 的 `go_package` 选项同步更新。
-
-**协议本身（消息、方法、字段）与上游完全一致**，因此基于本仓库构建的驱动与上游平台仍可互通。
